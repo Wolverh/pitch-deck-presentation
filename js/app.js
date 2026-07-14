@@ -185,8 +185,9 @@
       }
     }, { passive: true });
 
-    // Mouse wheel — strict one-slide-per-scroll, no skipping
+    // Mouse wheel — absorbs ALL momentum, only fires once per full gesture
     let wheelLocked = false;
+    let wheelUnlockTimer = null;
     document.addEventListener('wheel', (e) => {
       // Check if we're scrolling inside a slide-inner that has overflow
       const slideInner = slides[currentSlide].querySelector('.slide-inner');
@@ -204,7 +205,13 @@
 
       e.preventDefault();
 
-      // Block ALL scroll events while transitioning or locked
+      // Reset unlock timer on EVERY wheel event (kills momentum)
+      if (wheelUnlockTimer) clearTimeout(wheelUnlockTimer);
+      wheelUnlockTimer = setTimeout(() => {
+        wheelLocked = false;
+      }, 1500);
+
+      // Only the first event in a gesture gets through
       if (wheelLocked || isTransitioning) return;
       wheelLocked = true;
 
@@ -213,11 +220,6 @@
       } else if (e.deltaY < 0) {
         prevSlide();
       }
-
-      // Keep locked for 1.2s — longer than transition duration
-      setTimeout(() => {
-        wheelLocked = false;
-      }, 1200);
     }, { passive: false });
   }
 
