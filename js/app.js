@@ -185,8 +185,8 @@
       }
     }, { passive: true });
 
-    // Mouse wheel
-    let wheelTimeout = null;
+    // Mouse wheel — strict one-slide-per-scroll, no skipping
+    let wheelLocked = false;
     document.addEventListener('wheel', (e) => {
       // Check if we're scrolling inside a slide-inner that has overflow
       const slideInner = slides[currentSlide].querySelector('.slide-inner');
@@ -204,17 +204,20 @@
 
       e.preventDefault();
 
-      if (wheelTimeout) return;
-
-      wheelTimeout = setTimeout(() => {
-        wheelTimeout = null;
-      }, 800);
+      // Block ALL scroll events while transitioning or locked
+      if (wheelLocked || isTransitioning) return;
+      wheelLocked = true;
 
       if (e.deltaY > 0) {
         nextSlide();
       } else if (e.deltaY < 0) {
         prevSlide();
       }
+
+      // Keep locked for 1.2s — longer than transition duration
+      setTimeout(() => {
+        wheelLocked = false;
+      }, 1200);
     }, { passive: false });
   }
 

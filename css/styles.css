@@ -132,7 +132,7 @@ h1, h2, h3, h4, h5, h6 {
 /* ── Slide Counter ── */
 .slide-counter {
   position: fixed;
-  bottom: 28px;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   font-family: 'Cairo', sans-serif;
@@ -184,7 +184,7 @@ h1, h2, h3, h4, h5, h6 {
   right: 50%;
   transform: translateX(50%);
   display: flex;
-  gap: 16px;
+  gap: 72px;
   z-index: 100;
   direction: ltr;
 }
